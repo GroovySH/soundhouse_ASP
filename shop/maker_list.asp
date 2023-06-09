@@ -1,0 +1,1 @@
+<META HTTP-EQUIV="REFRESH" CONTENT="0;URL=AllMakerList.asp?IndexCd=abc0123456789">
