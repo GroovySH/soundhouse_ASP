@@ -20,7 +20,7 @@ Option Explicit
 '2016.04.05 GV 出荷完了日とは別に、出荷日を追加。(注文変更キャンセル機能)
 '2016.06.03 GV 入金完了フラグを追加。(発送ステータス改修対応)
 '2018.01.12 GV 入金確認期限切れ見積もり注文は変更キャンセル不可。
-'2018.12.21 GV PaｙPal対応。
+'2018.12.21 GV PayPal対応。
 '2020.02.05 GV 請求書DL対応。
 '2020.06.31 GV 欲しい物リスト対応。(#2841)
 '2022.03.23 GV 業者向けサイト。(#3110)
@@ -463,6 +463,8 @@ If (wFlg = True) Then
 	vSQL = vSQL & " , od.受注単価 "
 	vSQL = vSQL & " , od.受注金額 "
 	vSQL = vSQL & " , od.受注数量 "
+	vSQL = vSQL & " , od.受注時受注単価 "
+	vSQL = vSQL & " , od.受注時受注数量 "
 	vSQL = vSQL & " , od.出荷指示合計数量 "
 	vSQL = vSQL & " , (CASE "
 	vSQL = vSQL & "     WHEN o.受注日 IS NOT NULL AND o.削除日 IS NULL THEN 'Y' "
@@ -1195,6 +1197,8 @@ vSQL = vSQL & "ON od.受注番号 = o.受注番号 "
 					.Add "gift_no" , giftNo 'ギフト番号 2021.06.30 GV add
 					.Add "tantou_name", tantouName '相手先担当者 2022.03.23 GV add
 					.Add "tantou_email", tantouEmail '顧客E_mail 2022.03.23 GV add
+					.Add "order_i_tanka", CDbl(Trim(vRS("受注時受注単価")))
+					.Add "order_i_suu", CDbl(vRS("受注時受注数量")) 
 				End With
 			End With
 

@@ -133,6 +133,8 @@ Dim receiptDate '2020.02.05 GV add
 Dim displayReceiptDate '2020.03.18 GV add
 Dim giftCustomerNo '2021.06.30 GV add
 Dim giftNo '2021.06.30 GV add
+Dim orderTotalOrderAmount2
+Dim orderUsedPoint
 
 Set oJSON = New aspJSON
 
@@ -227,6 +229,21 @@ vSQL = vSQL & "            ELSE a.最終入金日 " '2020.03.18 GV add
 vSQL = vSQL & "       END) AS 領収日 " '2020.03.18 GV add
 vSQL = vSQL & "    , a.ギフト顧客番号 "
 vSQL = vSQL & "    , a.ギフト番号 "
+vSQL = vSQL & "    , a.受注時商品合計金額 "
+vSQL = vSQL & "    , a.受注時送料 "
+vSQL = vSQL & "    , a.受注時代引手数料 "
+vSQL = vSQL & "    , a.受注時外税合計金額 "
+vSQL = vSQL & "    , a.受注時内税合計金額 "
+vSQL = vSQL & "    , a.受注時受注合計金額 "
+vSQL = vSQL & "    , a.受注時入金合計金額 "
+vSQL = vSQL & "    , a.受注時過不足相殺金額 "
+vSQL = vSQL & "    , a.受注時利用ポイント "
+vSQL = vSQL & "    , a.受注時合計金額 "
+
+' Todo:DB追加されたら以下の内容のコメントアウトを外す
+'vSQL = vSQL & "    , a.値引き後消費税 "
+'vSQL = vSQL & "    , a.受注時値引き後消費税 "
+' Todo:DB追加されたら上記の内容のコメントアウトを外す
 
 vSQL = vSQL & "FROM "
 vSQL = vSQL & "      " & gLinkServer & "受注     a WITH (NOLOCK) "
@@ -406,6 +423,20 @@ If vRS.EOF = False Then
 		giftNo = CStr(vRS("ギフト番号"))
 	End If
 
+	' 受注時合計金額
+	If (IsNull(vRS("受注時合計金額"))) Then
+		orderTotalOrderAmount2 = 0
+	Else
+		orderTotalOrderAmount2 = CDbl(vRS("受注時合計金額"))
+	End If
+
+	' 受注時利用ポイント
+	If (IsNull(vRS("受注時利用ポイント"))) Then
+		orderUsedPoint = 0
+	Else
+		orderUsedPoint = CDbl(vRS("受注時利用ポイント"))
+	End If
+
 
 	With oJSON.data("data")
 		.Add "o_no", CStr(Trim(vRS("受注番号")))
@@ -444,6 +475,17 @@ If vRS.EOF = False Then
 		.Add "display_receipt_dt", displayReceiptDate '2020.03.18 GV add
 		.Add "gift_cst_no" , giftCustomerNo 'ギフト顧客番号 2021.06.30 GV add
 		.Add "gift_no" , giftNo 'ギフト番号 2021.06.30 GV add
+		.Add "order_total_item_am", CDbl(Trim(vRS("受注時商品合計金額")))
+		.Add "order_total_order_am", CDbl(Trim(vRS("受注時受注合計金額")))
+		.Add "order_total_order_am2", orderTotalOrderAmount2 ' 合計金額
+' Todo:DB追加されたら以下の内容のコメントアウトを外す
+'		.Add "after_discount_tax", CDbl(vRS("値引き後消費税"))
+'		.Add "order_after_discount_tax", CDbl(vRS("受注時値引き後消費税"))
+' Todo:DB追加されたら上記の内容のコメントアウトを外す
+		.Add "order_ff_charge", CDbl(vRS("受注時送料"))
+		.Add "order_cod_charge", CDbl(vRS("受注時代引手数料"))
+		.Add "order_kabusoku_am", CDbl(Trim(vRS("受注時過不足相殺金額")))
+		.Add "order_used_pt", orderUsedPoint ' 受注時利用ポイント
 	End With
 End If
 
