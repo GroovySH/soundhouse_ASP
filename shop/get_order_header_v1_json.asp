@@ -187,7 +187,10 @@ vSQL = vSQL & " ,o.クーポン "							' coupon
 vSQL = vSQL & " ,o.認証アシストフラグ "					' cc_assist_flag 2016.06.22 GV add
 vSQL = vSQL & " ,o.セキュア3Dフラグ "					' cc_3d_secure_flag 2016.11.17 GV add
 vSQL = vSQL & " ,o.セキュア3D結果コード "				' cc_3d_secure_result_cd 2016.11.17 GV add
-
+' Todo:DB追加されたら以下の内容のコメントアウトを外す
+'vSQL = vSQL & "    , a.値引き後消費税 "
+'vSQL = vSQL & "    , a.受注時値引き後消費税 "
+' Todo:DB追加されたら上記の内容のコメントアウトを外す
 
 vSQL = vSQL & "FROM "
 vSQL = vSQL & "      " & gLinkServer & "受注     o WITH (NOLOCK) "
@@ -491,6 +494,10 @@ If vRS.EOF = False Then
 		.Add "o_dt", orderDate '受注日 2016.09.06 GV add
 		.Add "cc_3d_secure", cc3dSecure ' 3Dセキュアフラグ 2016.11.17 GV add
 		.Add "cc_3d_secure_result", cc3dSecureResult ' 3Dセキュア結果コード 2016.11.17 GV add
+' Todo:DB追加されたら以下の内容のコメントアウトを外す
+'		.Add "after_discount_tax", CDbl(vRS("値引き後消費税"))
+'		.Add "order_after_discount_tax", CDbl(vRS("受注時値引き後消費税"))
+' Todo:DB追加されたら上記の内容のコメントアウトを外す
 	End With
 End If
 
