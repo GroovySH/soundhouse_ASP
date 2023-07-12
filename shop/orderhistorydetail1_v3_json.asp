@@ -135,6 +135,8 @@ Dim giftCustomerNo '2021.06.30 GV add
 Dim giftNo '2021.06.30 GV add
 Dim orderTotalOrderAmount2
 Dim orderUsedPoint
+Dim afterDiscountTax
+Dim orderAfterDiscountTax
 
 Set oJSON = New aspJSON
 
@@ -437,6 +439,19 @@ If vRS.EOF = False Then
 		orderUsedPoint = CDbl(vRS("受注時利用ポイント"))
 	End If
 
+	' 値引き後消費税
+	if  (IsNull(vRS("値引き後消費税"))) Then
+		afterDiscountTax = 0
+	Else
+		afterDiscountTax = CDbl(vRS("値引き後消費税"))
+	End If
+
+	' 受注時値引き後消費税
+	if  (IsNull(vRS("受注時値引き後消費税"))) Then
+		orderAfterDiscountTax = 0
+	Else
+		orderAfterDiscountTax = CDbl(vRS("受注時値引き後消費税"))
+	End If
 
 	With oJSON.data("data")
 		.Add "o_no", CStr(Trim(vRS("受注番号")))
@@ -478,10 +493,8 @@ If vRS.EOF = False Then
 		.Add "order_total_item_am", CDbl(Trim(vRS("受注時商品合計金額")))
 		.Add "order_total_order_am", CDbl(Trim(vRS("受注時受注合計金額")))
 		.Add "order_total_order_am2", orderTotalOrderAmount2 ' 合計金額
-' Todo:DB追加されたら以下の内容のコメントアウトを外す
-'		.Add "after_discount_tax", CDbl(vRS("値引き後消費税"))
-'		.Add "order_after_discount_tax", CDbl(vRS("受注時値引き後消費税"))
-' Todo:DB追加されたら上記の内容のコメントアウトを外す
+		.Add "after_discount_tax", afterDiscountTax
+		.Add "order_after_discount_tax", orderAfterDiscountTax
 		.Add "order_ff_charge", CDbl(vRS("受注時送料"))
 		.Add "order_cod_charge", CDbl(vRS("受注時代引手数料"))
 		.Add "order_kabusoku_am", CDbl(Trim(vRS("受注時過不足相殺金額")))

@@ -262,6 +262,8 @@ Dim isOtherAmountOk '2018.12.03 GV add
 Dim wPaymentMethodDetail '2018.12.21 GV add
 Dim giftCustomerNo '2021.06.30 GV add
 Dim giftNo '2021.06.30 GV add
+Dim orderITanka
+Dim orderISuu
 
 '2022.03.23 GV add start
 Dim tantouName
@@ -388,7 +390,7 @@ If (wFlg = True) Then
 
 		' キャンセル注文フラグ
 		If wOrderCancelled = "Y" Then
-			'vSQL = vSQL & "  AND o1.削除日 IS NOT NULL "
+			
 			vSQL = vSQL & "  AND od1.Webキャンセルフラグ = 'Y' "
 		Else
 			If wOrderHidden = "Y" Then
@@ -464,7 +466,7 @@ If (wFlg = True) Then
 	vSQL = vSQL & " , od.受注金額 "
 	vSQL = vSQL & " , od.受注数量 "
 	vSQL = vSQL & " , od.受注時受注単価 "
-	vSQL = vSQL & " , od.受注時受注数量 "
+	vSQL = vSQL & " , od.受注時数量 "
 	vSQL = vSQL & " , od.出荷指示合計数量 "
 	vSQL = vSQL & " , (CASE "
 	vSQL = vSQL & "     WHEN o.受注日 IS NOT NULL AND o.削除日 IS NULL THEN 'Y' "
@@ -636,6 +638,8 @@ If (wFlg = True) Then
 	vSQL = vSQL & ", od2.出荷指示合計数量 "
 	vSQL = vSQL & ", od2.受注明細備考 "
 	vSQL = vSQL & ", od2.適正在庫数量 "
+	vSQL = vSQL & ", od2.受注時受注単価 "
+	vSQL = vSQL & ", od2.受注時数量 "
 
 ' 未発送注文の場合
 If (wOrderShipping = "Y") Then
@@ -1138,6 +1142,20 @@ vSQL = vSQL & "ON od.受注番号 = o.受注番号 "
 			End If
 			'2018.01.12 GV add end
 
+			' 受注時受注単価
+			If (IsNull(vRS("受注時受注単価"))) Then
+				orderITanka = 0
+			Else
+				orderITanka = CDbl(Trim(vRS("受注時受注単価")))
+			End If
+
+			' 受注時数量
+			If (IsNull(vRS("受注時数量"))) Then
+				orderISuu = 0
+			Else
+				orderISuu = CDbl(vRS("受注時数量")) 
+			End If
+
 
 
 			'--- 明細行生成
@@ -1197,8 +1215,8 @@ vSQL = vSQL & "ON od.受注番号 = o.受注番号 "
 					.Add "gift_no" , giftNo 'ギフト番号 2021.06.30 GV add
 					.Add "tantou_name", tantouName '相手先担当者 2022.03.23 GV add
 					.Add "tantou_email", tantouEmail '顧客E_mail 2022.03.23 GV add
-					.Add "order_i_tanka", CDbl(Trim(vRS("受注時受注単価")))
-					.Add "order_i_suu", CDbl(vRS("受注時受注数量")) 
+					.Add "order_i_tanka", orderITanka
+					.Add "order_i_suu", orderISuu
 				End With
 			End With
 
